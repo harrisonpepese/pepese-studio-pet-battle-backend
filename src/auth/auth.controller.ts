@@ -1,9 +1,9 @@
-import { Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local.guard';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.model';
-import { CreateUserDto } from 'pepese-core/src/user';
+import { CreateUserDto } from 'pepese-core/dist/user';
 
 @Controller('auth')
 export class AuthController {
@@ -25,5 +25,9 @@ export class AuthController {
     }
     user = await this.userService.create(dto);
     return user;
+  }
+  @Post('refresh')
+  async refreshToken(@Body() req: any) {
+    return await this.authService.refreshToken(req.token);
   }
 }

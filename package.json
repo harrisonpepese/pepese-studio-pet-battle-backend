@@ -35,7 +35,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "pepese-core": "^1.0.2",
+    "pepese-core": "^1.0.12",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
@@ -46,6 +46,7 @@
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
+    "@types/passport-local": "^1.0.36",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

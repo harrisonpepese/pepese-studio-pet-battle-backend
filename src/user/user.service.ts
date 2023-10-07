@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto, EUserRole } from 'pepese-core/src/user';
-import { User } from './user.model';
+import { CreateUserDto, EUserRole } from 'pepese-core';
+import { User, UserDocument } from './user.model';
 
 @Injectable()
 export class UserService {
@@ -24,7 +24,7 @@ export class UserService {
   async findById(id: string) {
     return await this.model.findById(id);
   }
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<UserDocument> {
     return await this.model.findOne({ email });
   }
 

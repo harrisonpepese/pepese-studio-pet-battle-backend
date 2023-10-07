@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { EUserRole, IUser } from 'pepese-core/src/user';
+import { EUserRole, IUser } from 'pepese-core';
 import { Document } from 'mongoose';
 import * as bcript from 'bcrypt';
 
@@ -14,6 +14,9 @@ export class User implements IUser {
 
   @Prop({ required: true })
   email: string;
+
+  @Prop({ default: 0 })
+  pepeseCoin: number;
 
   @Prop({ required: true })
   password: string;
