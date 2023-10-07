@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PlayerModule } from './player/player.module';
+import { PetModule } from './pet/pet.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PlayerModule } from './player/player.module';
     UserModule,
     AuthModule,
     PlayerModule,
+    PetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
