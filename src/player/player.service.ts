@@ -30,4 +30,8 @@ export class PlayerService {
   getPlayerByAccountId(accountId: string) {
     return this.playerModel.findOne({ accountId });
   }
+
+  getById(id: string) {
+    return this.playerModel.findById(id);
+  }
 }

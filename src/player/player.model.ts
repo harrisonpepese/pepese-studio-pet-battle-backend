@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { IBattlePetGamePlayer, IPet } from 'pepese-core';
+import { Pet } from 'src/pet/pet.model';
 
 export type PlayerDocument = Player & Document;
 
 @Schema()
 export class Player implements IBattlePetGamePlayer {
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Pet' })
   pets: IPet[];
   @Prop({ default: 0 })
   gameCoins: number;

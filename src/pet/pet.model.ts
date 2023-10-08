@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { EElementType, EHabitatType, IPet, IPetAttributes } from 'pepese-core';
+import { EElementType, EHabitatType, IPet } from 'pepese-core';
+import { PetAttributes } from './class/petAttributes.class';
 
 export type PetDocument = Pet & Document;
-
+export type IPetProps = Pick<Pet, 'name' | 'habitat' | 'elemet'>;
 @Schema()
-export class Pet implements IPet {
+export class Pet {
+  constructor() {
+    this.level = 1;
+    this.created_at = new Date();
+    this.updated_at = new Date();
+  }
   @Prop()
   id: string;
   @Prop()
@@ -13,12 +19,12 @@ export class Pet implements IPet {
   habitat: EHabitatType;
   @Prop()
   elemet: EElementType;
-  @Prop()
+  @Prop({ default: 1 })
   level: number;
   @Prop()
-  baseAttributes: IPetAttributes;
+  baseAttributes: PetAttributes;
   @Prop()
-  currentAttributes: IPetAttributes;
+  currentAttributes: PetAttributes;
   @Prop()
   attributePoints: number;
   @Prop()

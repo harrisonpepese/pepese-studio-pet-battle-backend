@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @Post('singup')
-  async singUp(dto: CreateUserDto) {
+  async singUp(@Body() dto: CreateUserDto) {
     let user: User = await this.userService.findByEmail(dto.email);
     if (user) {
       throw 'this email is alreday in use';
