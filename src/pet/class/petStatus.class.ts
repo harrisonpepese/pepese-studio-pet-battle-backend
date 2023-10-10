@@ -8,6 +8,7 @@ export interface IPetStatus {
   physicalDefense: number;
   magicaDefense: number;
   speed: number;
+  level: number;
 }
 
 export class PetStatus {

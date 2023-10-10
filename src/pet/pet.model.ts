@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { EElementType, EHabitatType, IPet } from 'pepese-core';
+import { EElementType, EHabitatType } from 'pepese-core';
 import { PetAttributes } from './class/petAttributes.class';
+import { PetStatus } from './class/petStatus.class';
 
 export type PetDocument = Pet & Document;
 export type IPetProps = Pick<Pet, 'name' | 'habitat' | 'elemet'>;
@@ -19,20 +20,47 @@ export class Pet {
   habitat: EHabitatType;
   @Prop()
   elemet: EElementType;
-  @Prop({ default: 1 })
-  level: number;
   @Prop()
   baseAttributes: PetAttributes;
   @Prop()
   currentAttributes: PetAttributes;
   @Prop()
+  level: number;
+  @Prop()
   attributePoints: number;
+  @Prop()
+  avaliableAttributePoints: number;
   @Prop()
   experience: number;
   @Prop()
   created_at: Date;
   @Prop()
   updated_at: Date;
+  status: PetStatus;
+
+  gainExperience(experience: number) {
+    const expToNextLevel = this.calcExperienceToNextLevel(
+      this.level,
+      this.experience,
+    );
+    this.experience += experience;
+    if (this.experience >= expToNextLevel) {
+      this.levelUp();
+      this.gainExperience(this.experience - expToNextLevel);
+    }
+  }
+
+  levelUp() {
+    this.level++;
+    const attributePoints = Math.floor(this.level / 10 + 1);
+    this.attributePoints += attributePoints;
+    this.avaliableAttributePoints += attributePoints;
+    this.experience = 0;
+  }
+
+  calcExperienceToNextLevel(currentLevel: number, currentExp: number) {
+    return Math.floor(100 * currentLevel) - currentExp;
+  }
 }
 
 export const PetSchema = SchemaFactory.createForClass(Pet);
