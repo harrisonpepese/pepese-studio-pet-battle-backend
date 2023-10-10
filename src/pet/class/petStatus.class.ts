@@ -1,21 +1,5 @@
 import { PetAttributes } from './petAttributes.class';
-
 export interface IPetStatus {
-  health: number;
-  stamina: number;
-  physicalAttack: number;
-  magicAttack: number;
-  physicalDefense: number;
-  magicaDefense: number;
-  speed: number;
-  level: number;
-}
-
-export class PetStatus {
-  constructor(attributes: PetAttributes) {
-    this.health = this.calcHealth(attributes);
-    this.stamina = this.calcStamina(attributes);
-  }
   health: number;
   stamina: number;
   physicalAttack: number;
@@ -25,12 +9,83 @@ export class PetStatus {
   speed: number;
   acurency: number;
   dodge: number;
-
-  calcStatus(attributes: PetAttributes) {
-    this.health = this.calcHealth(attributes);
+}
+export interface IPetStatusCurrent {
+  currentHealth: number;
+  currentStamina: number;
+  currentPhysicalAttack: number;
+  currentMagicAttack: number;
+  currentPhysicalDefense: number;
+  currentMagicaDefense: number;
+  currentSpeed: number;
+  currentAcurency: number;
+  currentDodge: number;
+}
+export class PetStatus {
+  constructor(params: IPetStatus) {
+    this.health = params.health;
+    this.stamina = params.stamina;
+    this.physicalAttack = params.physicalAttack;
+    this.magicAttack = params.magicAttack;
+    this.physicalDefense = params.physicalDefense;
+    this.magicaDefense = params.magicaDefense;
+    this.speed = params.speed;
+    this.acurency = params.acurency;
+    this.dodge = params.dodge;
   }
 
-  calcHealth(attributes: PetAttributes) {
+  private health: number;
+  private stamina: number;
+  private physicalAttack: number;
+  private magicAttack: number;
+  private physicalDefense: number;
+  private magicaDefense: number;
+  private speed: number;
+  private acurency: number;
+  private dodge: number;
+
+  currentHealth: number;
+  currentStamina: number;
+  currentPhysicalAttack: number;
+  currentMagicAttack: number;
+  currentPhysicalDefense: number;
+  currentMagicaDefense: number;
+  currentSpeed: number;
+  currentAcurency: number;
+  currentDodge: number;
+
+  damage(damage: number) {
+    this.currentHealth -= damage;
+    if (this.health < 0) this.health = 0;
+  }
+  heal(heal: number) {
+    this.currentHealth += heal;
+    if (this.currentHealth > this.health) this.currentHealth = this.health;
+  }
+  restoreStamina(stamina: number) {
+    this.currentStamina += stamina;
+    if (this.currentStamina > this.stamina) this.currentStamina = this.stamina;
+  }
+  spendStamina(stamina: number) {
+    this.currentStamina -= stamina;
+    if (this.currentStamina < 0) this.currentStamina = 0;
+  }
+
+  static create(attributes: PetAttributes): PetStatus {
+    return new PetStatus({
+      health: this.calcHealth(attributes),
+      stamina: this.calcStamina(attributes),
+      physicalAttack: this.calcPhysicalAttack(attributes),
+      magicAttack: this.calcMagicAttack(attributes),
+      physicalDefense: this.calcPhysicalDefense(attributes),
+      magicaDefense: this.calcMagicaDefense(attributes),
+      speed: this.calcSpeed(attributes),
+      acurency: this.calcAcurency(attributes),
+      dodge: this.calcDodge(attributes),
+    });
+  }
+
+  private static calcHealth(attributes: PetAttributes) {
     const { vitality, dexterity } = attributes;
     const minHealth = 20;
     const baseHealth = minHealth + vitality * 5 + Math.round(dexterity / 5);
@@ -39,28 +94,28 @@ export class PetStatus {
     );
   }
 
-  calcStamina(attributes: PetAttributes): number {
+  private static calcStamina(attributes: PetAttributes): number {
     const { intelligence, dexterity } = attributes;
     const min = 20;
     const base = min + intelligence * 5 + Math.round(dexterity / 5);
     return Math.round(base + base * (Math.floor(intelligence / 10) / 100));
   }
 
-  calcPhysicalAttack(attributes: PetAttributes): number {
+  private static calcPhysicalAttack(attributes: PetAttributes): number {
     const { strength, dexterity } = attributes;
     const min = 1;
-    const base = min + strength * 5 + Math.round(dexterity / 5);
+    const base = min + strength * 1 + Math.round(dexterity / 5);
     return Math.round(base + base * (Math.floor(strength / 10) / 100));
   }
 
-  calcMagicAttack(attributes: PetAttributes): number {
+  private static calcMagicAttack(attributes: PetAttributes): number {
     const { intelligence, dexterity } = attributes;
     const min = 1;
     const base = min + intelligence * 5 + Math.round(dexterity / 5);
     return Math.round(base + base * (Math.floor(intelligence / 10) / 100));
   }
 
-  calcPhysicalDefense(attributes: PetAttributes): number {
+  private static calcPhysicalDefense(attributes: PetAttributes): number {
     const { vitality, dexterity, strength } = attributes;
     const min = 1;
     const base =
@@ -68,7 +123,7 @@ export class PetStatus {
     return Math.round(base + base * (Math.floor(strength / 10) / 100));
   }
 
-  calcMagicaDefense(attributes: PetAttributes): number {
+  private static calcMagicaDefense(attributes: PetAttributes): number {
     const { vitality, dexterity, intelligence } = attributes;
     const min = 1;
     const base =
@@ -79,21 +134,21 @@ export class PetStatus {
     return Math.round(base + base * (Math.floor(intelligence / 10) / 100));
   }
 
-  calcSpeed(attributes: PetAttributes): number {
+  private static calcSpeed(attributes: PetAttributes): number {
     const { agility, dexterity } = attributes;
     const min = 1;
     const base = min + agility * 5 + Math.round(dexterity / 6);
     return Math.round(base + base * (Math.floor(agility / 10) / 100));
   }
 
-  calcAcurency(attributes: PetAttributes): number {
+  private static calcAcurency(attributes: PetAttributes): number {
     const { dexterity, agility } = attributes;
     const min = 1;
     const base = min + dexterity * 5 + Math.round(agility / 6);
     return Math.round(base + base * (Math.floor(dexterity / 10) / 100));
   }
 
-  calcDodge(attributes: PetAttributes): number {
+  private static calcDodge(attributes: PetAttributes): number {
     const { dexterity, agility } = attributes;
     const min = 1;
     const base = min + agility * 5 + Math.round(dexterity / 6);
