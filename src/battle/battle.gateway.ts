@@ -31,8 +31,8 @@ export class BattleGateway {
       case EBattleType.pve:
         console.log('pve');
         const battle = await this.createPvEBattle(playerId, data.petId);
-        this.joinBattleRoom(battle.id, client);
-        client.emit('battleChange', battle);
+        this.joinBattleRoom(battle.uuid, client);
+        this.server.to(battle.uuid).emit('battleChange', battle);
         break;
       case EBattleType.pvp:
         break;
@@ -41,27 +41,29 @@ export class BattleGateway {
     }
   }
 
+  @SubscribeMessage('setRoundAction')
   async addRoundAction(
     @Request() req,
     @MessageBody() data: TRoundActionRequestDto,
+    @ConnectedSocket() client: Socket,
   ) {
     const { playerId } = req.handshake.user;
     const battle = await this.battleService.addRoundAction(playerId, data);
-    this.server.to(data.battleId).emit('battleChange', battle);
+    this.server.to(data.battleUuid).emit('battleChange', battle);
   }
 
-  async emitBattleRoundEnd(battleId: string, battle: Battle) {}
+  async emitBattleRoundEnd(battleUuid: string, battle: Battle) {}
 
-  async emitBattleRoundStart(battleId: string, battle: Battle) {}
+  async emitBattleRoundStart(battleUuid: string, battle: Battle) {}
 
-  async emitBattleEnd(battleId: string, battle: Battle) {}
+  async emitBattleEnd(battleUuid: string, battle: Battle) {}
 
-  async emitBattleStart(battleId: string, battle: Battle) {}
+  async emitBattleStart(battleUuid: string, battle: Battle) {}
 
-  async emitBattleChange(battleId: string, battle: Battle) {}
+  async emitBattleChange(battleUuid: string, battle: Battle) {}
 
-  private async joinBattleRoom(battleId: string, client: Socket) {
-    client.join(battleId);
+  private joinBattleRoom(battleUuid: string, client: Socket) {
+    client.join(battleUuid);
   }
 
   private async createPvEBattle(

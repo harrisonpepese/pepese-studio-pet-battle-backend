@@ -1,6 +1,6 @@
 import { EBattleAction } from '../enum/battleAction.enum';
 
 export type TRoundActionRequestDto = {
-  battleId: string;
+  battleUuid: string;
   action: EBattleAction;
 };

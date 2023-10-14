@@ -26,21 +26,20 @@ export class Battle {
   getActiveRound() {
     return this.rounds[this.rounds.length - 1];
   }
-  startBattle() {
+  start() {
     this.status = EBattleStatus.inProgress;
+    this.createRound();
   }
   createRound() {
     const round = new BattleRound({
       blueAction: {
         playerId: this.blueTeam.playerId,
-        initialStatus: this.blueTeam.pet.tatus,
-        resultStatus: this.blueTeam.pet.status,
+        status: this.blueTeam.pet.status,
         seed: Math.random(),
       },
       redAction: {
         playerId: this.redTeam.playerId,
-        initialStatus: this.redTeam.pet.status,
-        resultStatus: this.redTeam.pet.status,
+        status: this.redTeam.pet.status,
         seed: Math.random(),
       },
     });

@@ -4,8 +4,7 @@ import { PetStatus } from 'src/pet/class/petStatus.class';
 
 export type TRoundPet = {
   playerId: string;
-  initialStatus: PetStatus;
-  resultStatus: PetStatus;
+  status: PetStatus;
   action?: EBattleAction;
   seed: number;
 };
@@ -46,8 +45,8 @@ export class BattleRound {
 
   executeRound() {
     const firstAction =
-      this.blueAction.initialStatus.currentSpeed * this.roundSeed >
-      this.redAction.initialStatus.currentSpeed * this.roundSeed
+      this.blueAction.status.currentSpeed * this.roundSeed >
+      this.redAction.status.currentSpeed * this.roundSeed
         ? this.blueAction
         : this.redAction;
     const secondAction =
@@ -68,27 +67,19 @@ export class BattleRound {
   }
 
   baseAttack(origin: TRoundPet, target: TRoundPet) {
-    if (
-      !target.action ||
-      target.action === EBattleAction.attack ||
-      target.action === EBattleAction.rest
-    ) {
-      target.resultStatus.currentHealth -=
-        origin.initialStatus.currentPhysicalAttack;
-    }
     if (target.action === EBattleAction.defense) {
-      target.resultStatus.currentHealth -= Math.floor(
-        origin.initialStatus.currentPhysicalAttack / 2,
+      target.status.currentHealth -= Math.floor(
+        origin.status.currentPhysicalAttack / 2,
       );
+      return;
     }
     if (target.action === EBattleAction.dodge) {
-      if (
-        target.initialStatus.currentDodge > origin.initialStatus.currentAcurency
-      ) {
-        target.resultStatus.currentHealth -=
-          origin.initialStatus.currentPhysicalAttack;
+      if (target.status.currentDodge > origin.status.currentAcurency) {
+        target.status.currentHealth -= origin.status.currentPhysicalAttack;
+        return;
       }
     }
+    target.status.currentHealth -= origin.status.currentPhysicalAttack;
   }
   rest(origin: TRoundPet) {}
 }
