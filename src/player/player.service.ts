@@ -17,7 +17,6 @@ export class PlayerService {
     }
     return this.playerModel.create({
       accountId,
-      pets: [],
       gameCoins: 0,
       createdAt: new Date(),
       updatedAt: new Date(),

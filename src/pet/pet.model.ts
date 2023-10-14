@@ -2,13 +2,19 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { EElementType, EHabitatType } from 'pepese-core';
 import { PetAttributes } from './class/petAttributes.class';
 import { PetStatus } from './class/petStatus.class';
+import { EPetTier } from './enum/petTier.enum';
 
 export type PetDocument = Pet & Document;
 export type IPetProps = Pick<Pet, 'name' | 'habitat' | 'elemet'>;
 @Schema()
 export class Pet {
-  constructor() {
+  constructor(props: IPetProps) {
+    this.name = props.name;
+    this.habitat = props.habitat;
+    this.elemet = props.elemet;
     this.level = 1;
+    this.baseAttributes = new PetAttributes({ tier: EPetTier.common });
+    this.currentAttributes = this.baseAttributes;
     this.created_at = new Date();
     this.updated_at = new Date();
   }
@@ -37,6 +43,10 @@ export class Pet {
   @Prop()
   updated_at: Date;
   status: PetStatus;
+
+  initStatus() {
+    this.status = PetStatus.create(this.currentAttributes);
+  }
 
   gainExperience(experience: number) {
     const expToNextLevel = this.calcExperienceToNextLevel(

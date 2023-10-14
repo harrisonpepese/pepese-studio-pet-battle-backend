@@ -1,4 +1,4 @@
-import { Random } from '../../common/random.service';
+import { Random } from '../../utils/random.service';
 import { EPetTier } from '../enum/petTier.enum';
 
 export interface IPetAttributesProps {
@@ -9,6 +9,7 @@ export class PetAttributes {
   constructor(props?: IPetAttributesProps) {
     if (props) {
       this.createBasicAttributes(props.tier);
+      return;
     }
     this.createBasicAttributes(0);
   }
@@ -20,12 +21,13 @@ export class PetAttributes {
   lucky: number;
 
   private calcTierRange(tier: EPetTier) {
+    const multiplier = tier + 1;
     const min = 1;
     const max = 6;
 
     return {
-      min: min * tier,
-      max: max * tier,
+      min: min * multiplier,
+      max: max * multiplier,
     };
   }
 

@@ -1,14 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { IBattlePetGamePlayer, IPet } from 'pepese-core';
+
 import { Pet } from 'src/pet/pet.model';
 
 export type PlayerDocument = Player & Document;
 
 @Schema()
-export class Player implements IBattlePetGamePlayer {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Pet' })
-  pets: IPet[];
+export class Player {
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Pet.name }],
+    default: [],
+  })
+  pets: Pet[] = [];
   @Prop({ default: 0 })
   gameCoins: number;
   @Prop()
@@ -31,7 +34,7 @@ export class Player implements IBattlePetGamePlayer {
     this.gameCoin -= amount;
   }
 
-  addPet(pet: IPet) {
+  addPet(pet: Pet) {
     this.pets.push(pet);
   }
 }

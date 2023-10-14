@@ -32,17 +32,26 @@ export class PetStatus {
     this.speed = params.speed;
     this.acurency = params.acurency;
     this.dodge = params.dodge;
+    this.currentHealth = params.health;
+    this.currentStamina = params.stamina;
+    this.currentPhysicalAttack = params.physicalAttack;
+    this.currentMagicAttack = params.magicAttack;
+    this.currentPhysicalDefense = params.physicalDefense;
+    this.currentMagicaDefense = params.magicaDefense;
+    this.currentSpeed = params.speed;
+    this.currentAcurency = params.acurency;
+    this.currentDodge = params.dodge;
   }
 
-  private health: number;
-  private stamina: number;
-  private physicalAttack: number;
-  private magicAttack: number;
-  private physicalDefense: number;
-  private magicaDefense: number;
-  private speed: number;
-  private acurency: number;
-  private dodge: number;
+  health: number;
+  stamina: number;
+  physicalAttack: number;
+  magicAttack: number;
+  physicalDefense: number;
+  magicaDefense: number;
+  speed: number;
+  acurency: number;
+  dodge: number;
 
   currentHealth: number;
   currentStamina: number;

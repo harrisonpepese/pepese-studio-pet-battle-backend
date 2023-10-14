@@ -12,5 +12,6 @@ import { PlayerModule } from 'src/player/player.module';
   ],
   controllers: [PetController],
   providers: [PetService],
+  exports: [PetService],
 })
 export class PetModule {}

@@ -7,7 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PlayerModule } from './player/player.module';
 import { PetModule } from './pet/pet.module';
-import { CommonModule } from './common/common.module';
 import { BattleModule } from './battle/battle.module';
 
 @Module({
@@ -20,7 +19,6 @@ import { BattleModule } from './battle/battle.module';
     AuthModule,
     PlayerModule,
     PetModule,
-    CommonModule,
     BattleModule,
   ],
   controllers: [AppController],
