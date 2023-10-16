@@ -65,7 +65,7 @@ export class PetStatus {
 
   damage(damage: number) {
     this.currentHealth -= damage;
-    if (this.health < 0) this.health = 0;
+    if (this.currentHealth < 0) this.currentHealth = 0;
   }
   heal(heal: number) {
     this.currentHealth += heal;

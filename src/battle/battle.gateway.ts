@@ -13,6 +13,7 @@ import { WebSocketJwtAuthGuard } from 'src/auth/guard/webSocketJwt.guard';
 import { Battle } from './battle.model';
 import { EBattleType } from './enum/battleType.enum';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
+import { EBattleEvents } from './enum/battleEvent.enum';
 
 @WebSocketGateway({ namespace: 'battle', cors: '*:*' })
 @UseGuards(WebSocketJwtAuthGuard)
@@ -32,6 +33,7 @@ export class BattleGateway {
         console.log('pve');
         const battle = await this.createPvEBattle(playerId, data.petId);
         this.joinBattleRoom(battle.uuid, client);
+        this.configEvents(battle);
         this.server.to(battle.uuid).emit('battleChange', battle);
         break;
       case EBattleType.pvp:
@@ -51,16 +53,38 @@ export class BattleGateway {
     const battle = await this.battleService.addRoundAction(playerId, data);
     this.server.to(data.battleUuid).emit('battleChange', battle);
   }
+  private configEvents(battle: Battle) {
+    battle.on(EBattleEvents.start, () => this.emitBattleStart(battle));
+    battle.on(EBattleEvents.end, () => this.emitBattleEnd(battle));
+    battle.on(EBattleEvents.roundStart, () =>
+      this.emitBattleRoundStart(battle),
+    );
+    battle.on(EBattleEvents.roundEnd, () => this.emitBattleRoundEnd(battle));
+  }
 
-  async emitBattleRoundEnd(battleUuid: string, battle: Battle) {}
+  private emitBattleRoundEnd(battle: Battle) {
+    console.log('emitBattleRoundEnd');
+    this.server.to(battle.uuid).emit(EBattleEvents.roundEnd, battle);
+  }
 
-  async emitBattleRoundStart(battleUuid: string, battle: Battle) {}
+  private emitBattleRoundStart(battle: Battle) {
+    console.log('emitBattleRoundStart');
+    this.server.to(battle.uuid).emit(EBattleEvents.roundStart, battle);
+  }
 
-  async emitBattleEnd(battleUuid: string, battle: Battle) {}
+  private emitBattleEnd(battle: Battle) {
+    console.log('emitBattleEnd');
+    this.server.to(battle.uuid).emit(EBattleEvents.end, battle);
+  }
 
-  async emitBattleStart(battleUuid: string, battle: Battle) {}
+  private emitBattleStart(battle: Battle) {
+    console.log('emitBattleStart');
+    this.server.to(battle.uuid).emit(EBattleEvents.start, battle);
+  }
 
-  async emitBattleChange(battleUuid: string, battle: Battle) {}
+  async emitBattleChange(battle: Battle) {
+    this.server.to(battle.uuid).emit(EBattleEvents.onBattleChange, battle);
+  }
 
   private joinBattleRoom(battleUuid: string, client: Socket) {
     client.join(battleUuid);

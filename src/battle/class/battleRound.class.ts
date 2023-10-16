@@ -10,7 +10,6 @@ export type TRoundPet = {
 };
 
 export enum ERoundStatus {
-  notStarted,
   awaitingActions,
   finished,
 }
@@ -23,7 +22,7 @@ export class BattleRound {
   constructor(props: IBattleRoundProps) {
     this.blueAction = props.blueAction;
     this.redAction = props.redAction;
-    this.status = ERoundStatus.notStarted;
+    this.status = ERoundStatus.awaitingActions;
     this.roundSeed = Random.rangeFloat(0.5, 1.5);
   }
   status: ERoundStatus;
@@ -37,10 +36,6 @@ export class BattleRound {
       return;
     }
     this.redAction.action = action;
-  }
-
-  startRound() {
-    this.status = ERoundStatus.awaitingActions;
   }
 
   executeRound() {
@@ -68,18 +63,19 @@ export class BattleRound {
 
   baseAttack(origin: TRoundPet, target: TRoundPet) {
     if (target.action === EBattleAction.defense) {
-      target.status.currentHealth -= Math.floor(
-        origin.status.currentPhysicalAttack / 2,
-      );
+      target.status.damage(Math.floor(origin.status.currentPhysicalAttack / 2));
       return;
     }
     if (target.action === EBattleAction.dodge) {
       if (target.status.currentDodge > origin.status.currentAcurency) {
-        target.status.currentHealth -= origin.status.currentPhysicalAttack;
         return;
       }
     }
-    target.status.currentHealth -= origin.status.currentPhysicalAttack;
+    target.status.damage(origin.status.currentPhysicalAttack);
   }
-  rest(origin: TRoundPet) {}
+
+  rest(origin: TRoundPet) {
+    origin.status.heal(Math.floor(origin.status.health * 0.1));
+    origin.status.restoreStamina(Math.floor(origin.status.stamina * 0.1));
+  }
 }

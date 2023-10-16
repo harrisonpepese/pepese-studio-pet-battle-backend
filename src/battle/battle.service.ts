@@ -9,11 +9,14 @@ import { EElementType, EHabitatType } from 'pepese-core';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
 import { EBattleAction } from './enum/battleAction.enum';
 import { EBattleStatus } from './enum/battleStatus.enum';
+import { Server } from 'socket.io';
+import { WebSocketServer } from '@nestjs/websockets';
 
 @Injectable()
 export class BattleService {
   private activeBattles: Battle[] = [];
   private matchQueue: TMachQueue[] = [];
+  @WebSocketServer() private server: Server;
   constructor(
     private readonly petService: PetService,
     private readonly playerService: PlayerService,
@@ -70,10 +73,9 @@ export class BattleService {
     if (battle.status !== EBattleStatus.inProgress) {
       throw new Error('Battle not in progress');
     }
-    const round = battle.getActiveRound();
-    round.addAction(playerId, prop.action);
+    battle.addRoundAction(playerId, prop.action);
     if ((battle.type = EBattleType.pve)) {
-      round.addAction(
+      battle.addRoundAction(
         'cpu',
         EBattleAction[
           Object.keys(EBattleAction)[
@@ -81,7 +83,7 @@ export class BattleService {
           ]
         ],
       );
-      round.executeRound();
+      battle.executeRound();
     }
     return battle;
   }

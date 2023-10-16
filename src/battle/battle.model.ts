@@ -3,9 +3,13 @@ import { EBattleStatus } from './enum/battleStatus.enum';
 import { randomUUID } from 'crypto';
 import { BattleRound } from './class/battleRound.class';
 import { TBattlePet } from './types/battlepet';
+import { EventEmitter } from 'stream';
+import { EBattleEvents } from './enum/battleEvent.enum';
+import { EBattleAction } from './enum/battleAction.enum';
 
-export class Battle {
+export class Battle extends EventEmitter {
   constructor() {
+    super();
     this.uuid = randomUUID();
     this.status = EBattleStatus.waiting;
     this.rounds = [];
@@ -26,10 +30,13 @@ export class Battle {
   getActiveRound() {
     return this.rounds[this.rounds.length - 1];
   }
+
   start() {
     this.status = EBattleStatus.inProgress;
     this.createRound();
+    this.emit(EBattleEvents.start, this);
   }
+
   createRound() {
     const round = new BattleRound({
       blueAction: {
@@ -44,5 +51,32 @@ export class Battle {
       },
     });
     this.rounds.push(round);
+    this.emit(EBattleEvents.roundStart, this);
+  }
+  addRoundAction(playerId: string, action: EBattleAction) {
+    const round = this.getActiveRound();
+    round.addAction(playerId, action);
+  }
+  executeRound() {
+    const round = this.getActiveRound();
+    round.executeRound();
+    this.emit(EBattleEvents.roundEnd, this);
+    this.checkIfBattleEnd();
+  }
+
+  end() {
+    this.status = EBattleStatus.finished;
+    this.emit(EBattleEvents.end, this);
+  }
+
+  private checkIfBattleEnd() {
+    if (this.blueTeam.pet.status.currentHealth <= 0) {
+      this.winner = 'red';
+      this.end();
+    }
+    if (this.redTeam.pet.status.currentHealth <= 0) {
+      this.winner = 'blue';
+      this.end();
+    }
   }
 }
