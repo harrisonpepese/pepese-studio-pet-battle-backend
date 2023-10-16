@@ -47,7 +47,6 @@ export class BattleGateway {
   async addRoundAction(
     @Request() req,
     @MessageBody() data: TRoundActionRequestDto,
-    @ConnectedSocket() client: Socket,
   ) {
     const { playerId } = req.handshake.user;
     const battle = await this.battleService.addRoundAction(playerId, data);
