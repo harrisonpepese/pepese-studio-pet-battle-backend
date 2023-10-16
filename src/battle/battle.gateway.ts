@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { BattleService } from './battle.service';
 import { MatchRequestDto } from './dto/matchRequest.dto';
-import { WebSocketJwtAuthGuard } from 'src/auth/guard/webSocketJwt.guard';
+import { WebSocketJwtAuthGuard } from '../auth/guard/webSocketJwt.guard';
 import { Battle } from './battle.model';
 import { EBattleType } from './enum/battleType.enum';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
