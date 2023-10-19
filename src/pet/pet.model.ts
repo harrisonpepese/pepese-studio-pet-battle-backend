@@ -3,6 +3,7 @@ import { EElementType, EHabitatType } from 'pepese-core';
 import { PetAttributes } from './class/petAttributes.class';
 import { PetStatus } from './class/petStatus.class';
 import { EPetTier } from './enum/petTier.enum';
+import { Document } from 'mongoose';
 
 export type PetDocument = Pet & Document;
 export type IPetProps = Pick<Pet, 'name' | 'habitat' | 'elemet'>;

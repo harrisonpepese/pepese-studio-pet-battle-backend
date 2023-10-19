@@ -1,4 +1,3 @@
-import { Random } from 'src/utils/random.service';
 import { EBattleAction } from '../enum/battleAction.enum';
 import { PetStatus } from 'src/pet/class/petStatus.class';
 
@@ -9,11 +8,6 @@ export type TRoundPet = {
   seed: number;
 };
 
-export enum ERoundStatus {
-  awaitingActions,
-  finished,
-}
-
 export interface IBattleRoundProps {
   blueAction: TRoundPet;
   redAction: TRoundPet;
@@ -22,13 +16,13 @@ export class BattleRound {
   constructor(props: IBattleRoundProps) {
     this.blueAction = props.blueAction;
     this.redAction = props.redAction;
-    this.status = ERoundStatus.awaitingActions;
-    this.roundSeed = Random.rangeFloat(0.5, 1.5);
   }
-  status: ERoundStatus;
-  roundSeed: number;
   blueAction: TRoundPet;
   redAction: TRoundPet;
+
+  canExecute() {
+    return this.blueAction.action && this.redAction.action;
+  }
 
   addAction(playerId: string, action: EBattleAction) {
     if (playerId === this.blueAction.playerId) {
@@ -40,8 +34,8 @@ export class BattleRound {
 
   executeRound() {
     const firstAction =
-      this.blueAction.status.currentSpeed * this.roundSeed >
-      this.redAction.status.currentSpeed * this.roundSeed
+      this.blueAction.status.currentSpeed * this.blueAction.seed >
+      this.redAction.status.currentSpeed * this.redAction.seed
         ? this.blueAction
         : this.redAction;
     const secondAction =
@@ -49,7 +43,6 @@ export class BattleRound {
 
     this.executeAction(firstAction, secondAction);
     this.executeAction(secondAction, firstAction);
-    this.status = ERoundStatus.finished;
   }
 
   executeAction(origin: TRoundPet, target: TRoundPet) {

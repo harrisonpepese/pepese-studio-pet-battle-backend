@@ -7,7 +7,6 @@ import { EBattleType } from './enum/battleType.enum';
 import { Pet } from 'src/pet/pet.model';
 import { EElementType, EHabitatType } from 'pepese-core';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
-import { EBattleAction } from './enum/battleAction.enum';
 import { EBattleStatus } from './enum/battleStatus.enum';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
@@ -60,7 +59,6 @@ export class BattleService {
     redPet.initStatus();
     battle.blueTeam = { pet: bluePet, playerId: blue.playerId };
     battle.redTeam = { pet: redPet, playerId: 'cpu' };
-    battle.start();
     this.activeBattles.push(battle);
     return battle;
   }
@@ -74,18 +72,6 @@ export class BattleService {
       throw new Error('Battle not in progress');
     }
     battle.addRoundAction(playerId, prop.action);
-    if ((battle.type = EBattleType.pve)) {
-      battle.addRoundAction(
-        'cpu',
-        EBattleAction[
-          Object.keys(EBattleAction)[
-            Math.floor(Math.random() * Object.keys(EBattleAction).length)
-          ]
-        ],
-      );
-      battle.executeRound();
-    }
-    return battle;
   }
 
   async getBattle(uuid: string) {

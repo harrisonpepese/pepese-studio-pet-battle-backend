@@ -14,6 +14,7 @@ import { Battle } from './battle.model';
 import { EBattleType } from './enum/battleType.enum';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
 import { EBattleEvents } from './enum/battleEvent.enum';
+import { EBattleTimer } from './enum/battleTimer.enum';
 
 @WebSocketGateway({ namespace: 'battle', cors: '*:*' })
 @UseGuards(WebSocketJwtAuthGuard)
@@ -35,6 +36,7 @@ export class BattleGateway {
         this.joinBattleRoom(battle.uuid, client);
         this.configEvents(battle);
         this.server.to(battle.uuid).emit('battleChange', battle);
+        battle.setTimer(5, EBattleTimer.startDelay);
         break;
       case EBattleType.pvp:
         break;
@@ -49,9 +51,9 @@ export class BattleGateway {
     @MessageBody() data: TRoundActionRequestDto,
   ) {
     const { playerId } = req.handshake.user;
-    const battle = await this.battleService.addRoundAction(playerId, data);
-    this.server.to(data.battleUuid).emit('battleChange', battle);
+    await this.battleService.addRoundAction(playerId, data);
   }
+
   private configEvents(battle: Battle) {
     battle.on(EBattleEvents.start, () => this.emitBattleStart(battle));
     battle.on(EBattleEvents.end, () => this.emitBattleEnd(battle));
@@ -59,26 +61,27 @@ export class BattleGateway {
       this.emitBattleRoundStart(battle),
     );
     battle.on(EBattleEvents.roundEnd, () => this.emitBattleRoundEnd(battle));
+    battle.on(EBattleEvents.timerTick, () => this.emitBattleTimerTick(battle));
   }
 
   private emitBattleRoundEnd(battle: Battle) {
-    console.log('emitBattleRoundEnd');
     this.server.to(battle.uuid).emit(EBattleEvents.roundEnd, battle);
   }
 
   private emitBattleRoundStart(battle: Battle) {
-    console.log('emitBattleRoundStart');
     this.server.to(battle.uuid).emit(EBattleEvents.roundStart, battle);
   }
 
   private emitBattleEnd(battle: Battle) {
-    console.log('emitBattleEnd');
     this.server.to(battle.uuid).emit(EBattleEvents.end, battle);
   }
 
   private emitBattleStart(battle: Battle) {
-    console.log('emitBattleStart');
     this.server.to(battle.uuid).emit(EBattleEvents.start, battle);
+  }
+
+  private emitBattleTimerTick(battle: Battle) {
+    this.server.to(battle.uuid).emit(EBattleEvents.timerTick, battle);
   }
 
   async emitBattleChange(battle: Battle) {
