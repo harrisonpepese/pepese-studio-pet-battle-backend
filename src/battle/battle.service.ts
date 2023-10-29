@@ -5,11 +5,13 @@ import { PetService } from 'src/pet/pet.service';
 import { PlayerService } from 'src/player/player.service';
 import { EBattleType } from './enum/battleType.enum';
 import { Pet } from 'src/pet/pet.model';
-import { EElementType, EHabitatType } from 'pepese-core';
+import { EElementType } from 'pepese-core';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
 import { EBattleStatus } from './enum/battleStatus.enum';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
+import { EPetTier } from 'src/pet/enum/petTier.enum';
+import { EHabitatType } from 'src/common/enum/EHabitat.enum';
 
 @Injectable()
 export class BattleService {
@@ -49,11 +51,15 @@ export class BattleService {
       name: 'Microsofto',
       habitat: EHabitatType.ground,
       elemet: EElementType.none,
+      tier: EPetTier.common,
+      playerId: blue.playerId,
     });
     const redPet = new Pet({
       name: 'CPU',
       habitat: EHabitatType.ground,
       elemet: EElementType.none,
+      tier: EPetTier.common,
+      playerId: 'cpu',
     });
     bluePet.initStatus();
     redPet.initStatus();

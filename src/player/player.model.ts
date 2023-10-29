@@ -1,17 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-
-import { Pet } from 'src/pet/pet.model';
+import { Document } from 'mongoose';
 
 export type PlayerDocument = Player & Document;
 
 @Schema()
 export class Player {
-  @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Pet.name }],
-    default: [],
-  })
-  pets: Pet[] = [];
   @Prop({ default: 0 })
   gameCoins: number;
   @Prop()
@@ -32,10 +25,6 @@ export class Player {
 
   reduceGameCoin(amount: number) {
     this.gameCoin -= amount;
-  }
-
-  addPet(pet: Pet) {
-    this.pets.push(pet);
   }
 }
 

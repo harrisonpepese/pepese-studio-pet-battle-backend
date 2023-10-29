@@ -1,20 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { EElementType, EHabitatType } from 'pepese-core';
+import { EElementType } from 'pepese-core';
 import { PetAttributes } from './class/petAttributes.class';
 import { PetStatus } from './class/petStatus.class';
 import { EPetTier } from './enum/petTier.enum';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { EHabitatType } from 'src/common/enum/EHabitat.enum';
 
 export type PetDocument = Pet & Document;
-export type IPetProps = Pick<Pet, 'name' | 'habitat' | 'elemet'>;
+export type IPetProps = Pick<
+  Pet,
+  'name' | 'playerId' | 'tier' | 'habitat' | 'elemet'
+>;
 @Schema()
 export class Pet {
   constructor(props: IPetProps) {
     this.name = props.name;
     this.habitat = props.habitat;
     this.elemet = props.elemet;
+    this.playerId = props.playerId;
+    this.tier = props.tier;
     this.level = 1;
-    this.baseAttributes = new PetAttributes({ tier: EPetTier.common });
+    this.baseAttributes = new PetAttributes({ tier: props.tier });
     this.currentAttributes = this.baseAttributes;
     this.created_at = new Date();
     this.updated_at = new Date();
@@ -23,6 +29,10 @@ export class Pet {
   id: string;
   @Prop()
   name: string;
+  @Prop({ type: Types.ObjectId, ref: 'Player' })
+  playerId: string;
+  @Prop()
+  tier: EPetTier;
   @Prop()
   habitat: EHabitatType;
   @Prop()
