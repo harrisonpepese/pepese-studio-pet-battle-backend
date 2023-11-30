@@ -63,21 +63,25 @@ export class PetStatus {
   currentAcurency: number;
   currentDodge: number;
 
-  damage(damage: number) {
+  damage(damage: number): number {
     this.currentHealth -= damage;
     if (this.currentHealth < 0) this.currentHealth = 0;
+    return damage;
   }
-  heal(heal: number) {
+  heal(heal: number): number {
     this.currentHealth += heal;
     if (this.currentHealth > this.health) this.currentHealth = this.health;
+    return heal;
   }
-  restoreStamina(stamina: number) {
+  restoreStamina(stamina: number): number {
     this.currentStamina += stamina;
     if (this.currentStamina > this.stamina) this.currentStamina = this.stamina;
+    return stamina;
   }
-  spendStamina(stamina: number) {
+  spendStamina(stamina: number): number {
     this.currentStamina -= stamina;
     if (this.currentStamina < 0) this.currentStamina = 0;
+    return stamina;
   }
 
   static create(attributes: PetAttributes): PetStatus {

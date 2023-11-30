@@ -26,6 +26,7 @@ export class Battle extends EventEmitter {
   currentRound: BattleRound;
   timer: NodeJS.Timeout;
   timerSeconds: number;
+  logs: string[];
   blueTeam: TBattlePet;
   redTeam: TBattlePet;
   winner?: 'blue' | 'red';
@@ -41,6 +42,7 @@ export class Battle extends EventEmitter {
       endedRounds: this.endedRounds,
       currentRound: this.currentRound,
       timerSeconds: this.timerSeconds,
+      logs: this.logs,
       blueTeam: this.blueTeam,
       redTeam: this.redTeam,
       winner: this.winner,
@@ -125,7 +127,23 @@ export class Battle extends EventEmitter {
 
   end() {
     this.status = EBattleStatus.finished;
+    this.giveExperience();
     this.emit(EBattleEvents.end, this.toDto());
+  }
+
+  private giveExperience() {
+    const winnerPet = this.getWinnerPet();
+    const loserPet = this.getLoserPet();
+    winnerPet.pet.gainExperience(10);
+    loserPet.pet.gainExperience(5);
+  }
+
+  private getWinnerPet() {
+    return this.winner === 'blue' ? this.blueTeam : this.redTeam;
+  }
+
+  private getLoserPet() {
+    return this.winner === 'blue' ? this.redTeam : this.blueTeam;
   }
 
   private checkIfBattleEnd() {

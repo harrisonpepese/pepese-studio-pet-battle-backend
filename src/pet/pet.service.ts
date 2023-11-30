@@ -16,10 +16,17 @@ export class PetService {
   ) {}
 
   async getbyId(id: string): Promise<Pet> {
-    return await this.petModel.findById(id);
+    const result = await this.petModel.findById(id);
+    const object = result.toObject();
+    return new Pet({ ...object, id: object._id.toString() });
   }
+
   async listByPlayerId(playerId: string): Promise<Pet[]> {
     return await this.petModel.find({ playerId });
+  }
+
+  async update(pet: Pet): Promise<void> {
+    await this.petModel.updateOne({ _id: pet.id }, { $set: { ...pet } });
   }
   async create(playerId: string, tier: EPetTier): Promise<PetDocument> {
     const pets = await this.listByPlayerId(playerId);
@@ -29,7 +36,7 @@ export class PetService {
     const habitat = this.getRandomHabitat();
     const selectedName = this.getPetRandomByHabbitat(habitat);
     const pet = await this.petModel.create(
-      new Pet({
+      Pet.generate({
         name: selectedName,
         habitat,
         elemet: this.getRandomElement(),

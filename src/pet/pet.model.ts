@@ -7,23 +7,35 @@ import { Document, Types } from 'mongoose';
 import { EHabitatType } from 'src/common/enum/EHabitat.enum';
 
 export type PetDocument = Pet & Document;
-export type IPetProps = Pick<
+export type TPetCreateProps = Pick<
   Pet,
   'name' | 'playerId' | 'tier' | 'habitat' | 'elemet'
 >;
+export interface IPetAttributes {
+  id?: string;
+  name?: string;
+  playerId?: string;
+  tier?: EPetTier;
+  habitat?: EHabitatType;
+  elemet?: EElementType;
+  baseAttributes?: PetAttributes;
+  currentAttributes?: PetAttributes;
+  level?: number;
+  attributePoints?: number;
+  avaliableAttributePoints?: number;
+  experience?: number;
+  created_at?: Date;
+  updated_at?: Date;
+}
 @Schema()
-export class Pet {
-  constructor(props: IPetProps) {
-    this.name = props.name;
-    this.habitat = props.habitat;
-    this.elemet = props.elemet;
-    this.playerId = props.playerId;
-    this.tier = props.tier;
-    this.level = 1;
-    this.baseAttributes = new PetAttributes({ tier: props.tier });
-    this.currentAttributes = this.baseAttributes;
-    this.created_at = new Date();
-    this.updated_at = new Date();
+export class Pet implements IPetAttributes {
+  constructor(props?: IPetAttributes) {
+    Object.assign(this, props);
+    this.created_at = this.created_at || new Date();
+    this.updated_at = this.updated_at || new Date();
+    if (this.currentAttributes) {
+      this.initStatus();
+    }
   }
   @Prop()
   id: string;
@@ -41,13 +53,13 @@ export class Pet {
   baseAttributes: PetAttributes;
   @Prop()
   currentAttributes: PetAttributes;
-  @Prop()
+  @Prop({ default: 0 })
   level: number;
-  @Prop()
+  @Prop({ default: 0 })
   attributePoints: number;
-  @Prop()
+  @Prop({ default: 0 })
   avaliableAttributePoints: number;
-  @Prop()
+  @Prop({ default: 0 })
   experience: number;
   @Prop()
   created_at: Date;
@@ -81,6 +93,21 @@ export class Pet {
 
   calcExperienceToNextLevel(currentLevel: number, currentExp: number) {
     return Math.floor(100 * currentLevel) - currentExp;
+  }
+  static generate(props: TPetCreateProps) {
+    const pet = new Pet();
+    pet.name = props.name;
+    pet.habitat = props.habitat;
+    pet.elemet = props.elemet;
+    pet.playerId = props.playerId;
+    pet.tier = props.tier;
+    pet.level = 1;
+    pet.baseAttributes = new PetAttributes({ tier: props.tier });
+    pet.currentAttributes = pet.baseAttributes;
+    pet.created_at = new Date();
+    pet.updated_at = new Date();
+    pet.initStatus();
+    return pet;
   }
 }
 

@@ -56,7 +56,10 @@ export class BattleGateway {
 
   private configEvents(battle: Battle) {
     battle.on(EBattleEvents.start, () => this.emitBattleStart(battle));
-    battle.on(EBattleEvents.end, () => this.emitBattleEnd(battle));
+    battle.on(EBattleEvents.end, async () => {
+      this.emitBattleEnd(battle);
+      await this.battleService.saveBattleResult(battle);
+    });
     battle.on(EBattleEvents.roundStart, () =>
       this.emitBattleRoundStart(battle),
     );

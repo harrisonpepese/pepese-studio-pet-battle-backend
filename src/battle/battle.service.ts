@@ -47,14 +47,8 @@ export class BattleService {
   async createPveBattle(blue: TMachQueue) {
     const battle = new Battle();
     battle.type = EBattleType.pve;
-    const bluePet = new Pet({
-      name: 'Microsofto',
-      habitat: EHabitatType.ground,
-      elemet: EElementType.none,
-      tier: EPetTier.common,
-      playerId: blue.playerId,
-    });
-    const redPet = new Pet({
+    const bluePet = await this.petService.getbyId(blue.petId);
+    const redPet = Pet.generate({
       name: 'CPU',
       habitat: EHabitatType.ground,
       elemet: EElementType.none,
@@ -82,5 +76,15 @@ export class BattleService {
 
   async getBattle(uuid: string) {
     return this.activeBattles.find((battle) => battle.uuid === uuid);
+  }
+
+  async saveBattleResult(battle: Battle): Promise<void> {
+    if (battle.type === EBattleType.pve) {
+      return await this.savePveBattleResult(battle);
+    }
+  }
+  private async savePveBattleResult(battle: Battle) {
+    const { pet } = battle.blueTeam;
+    await this.petService.update(pet);
   }
 }
