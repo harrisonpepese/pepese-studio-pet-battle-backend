@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SingInResponseDto } from 'pepese-core/dist/auth';
 import { UserDocument } from 'pepese-core/dist/user/schema';
-import { PlayerService } from 'src/player/player.service';
-
-import { UserService } from 'src/user/user.service';
+import { PlayerService } from '../player/player.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {

@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { TMachQueue } from './types/matchQueue';
-import { PetService } from 'src/pet/pet.service';
-import { PlayerService } from 'src/player/player.service';
 import { EBattleType } from './enum/battleType.enum';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
-import { EHabitatType } from 'src/common/enum/EHabitat.enum';
-import { EActionType, EElementType } from 'pepese-core/dist/common/enum';
+import {
+  EActionType,
+  EElementType,
+  EHabitatType,
+} from 'pepese-core/dist/common/enum';
 import { Pet } from 'pepese-core/dist/pets/class';
 import { EPetTier } from 'pepese-core/dist/pets/enum';
 import { Battle } from 'pepese-core/dist/battle/class';
+import { PetService } from '../pet/pet.service';
+import { PlayerService } from '../player/player.service';
 
 @Injectable()
 export class BattleService {

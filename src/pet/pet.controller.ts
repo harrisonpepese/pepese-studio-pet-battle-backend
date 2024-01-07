@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { PetService } from './pet.service';
-import { PlayerService } from 'src/player/player.service';
 import { CreatePetDto } from './dto/createPet.dto';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { PlayerService } from '../player/player.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('pet')

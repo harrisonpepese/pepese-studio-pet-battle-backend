@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Random } from 'src/utils/random.service';
-import { EHabitatType } from 'src/common/enum/EHabitat.enum';
 import { EFlyingPet, EGroundPet, EWaterPet } from './enum/pet.enum';
-import { EElementType } from 'pepese-core/dist/common/enum';
+import { EElementType, EHabitatType } from 'pepese-core/dist/common/enum';
 import { Pet } from 'pepese-core/dist/pets/class';
 import { EPetTier } from 'pepese-core/dist/pets/enum';
 import { PetDocument } from 'pepese-core/dist/pets/schema';
+import { Random } from '../utils/random.service';
 
 @Injectable()
 export class PetService {
