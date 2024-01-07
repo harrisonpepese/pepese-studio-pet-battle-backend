@@ -1,6 +1,7 @@
-import { EBattleAction } from '../enum/battleAction.enum';
+import { EActionType } from 'pepese-core/dist/common/enum';
 
 export type TRoundActionRequestDto = {
   battleUuid: string;
-  action: EBattleAction;
+  action: EActionType;
+  targetId: string;
 };

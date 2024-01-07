@@ -2,8 +2,8 @@ import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local.guard';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/user.model';
-import { CreateUserDto } from 'pepese-core/dist/user';
+import { CreateUserDto } from 'pepese-core/dist/user/dto';
+import { User } from 'pepese-core/dist/user/class';
 
 @Controller('auth')
 export class AuthController {

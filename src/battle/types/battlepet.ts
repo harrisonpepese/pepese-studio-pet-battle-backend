@@ -1,4 +1,4 @@
-import { Pet } from 'src/pet/pet.model';
+import { Pet } from 'pepese-core/dist/pets/class';
 
 export type TBattlePet = {
   pet: Pet;

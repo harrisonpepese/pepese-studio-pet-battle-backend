@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { SingInResponseDto } from 'pepese-core';
+import { SingInResponseDto } from 'pepese-core/dist/auth';
+import { UserDocument } from 'pepese-core/dist/user/schema';
 import { PlayerService } from 'src/player/player.service';
-import { UserDocument } from 'src/user/user.model';
 
 import { UserService } from 'src/user/user.service';
 
@@ -23,10 +23,10 @@ export class AuthService {
   }
 
   async login(user: UserDocument): Promise<SingInResponseDto> {
-    const player = await this.playerService.register(user._id.toString());
+    const player = await this.playerService.register(user.id);
     const payload = {
       email: user.email,
-      sub: user._id.toString(),
+      sub: user.id,
       playerId: player._id.toString(),
     };
     return {
@@ -36,7 +36,7 @@ export class AuthService {
       }),
       expiresIn: 60,
       role: user.role,
-      userId: user._id.toString(),
+      userId: user.id,
     };
   }
 

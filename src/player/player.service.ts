@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Player, PlayerDocument } from './player.model';
 import { InjectModel } from '@nestjs/mongoose';
+import { Player } from 'pepese-core/dist/player/class';
+import { PlayerDocument } from 'pepese-core/dist/player/schema';
 
 @Injectable()
 export class PlayerService {

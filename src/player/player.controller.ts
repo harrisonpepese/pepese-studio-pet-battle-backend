@@ -6,16 +6,19 @@ import { AuthGuard } from '@nestjs/passport';
 @UseGuards(AuthGuard('jwt'))
 export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
+
   @Get()
   getPlayerByAccountId(@Request() req: any) {
     const accountId = this.getAccountId(req);
     return this.playerService.getPlayerByAccountId(accountId);
   }
+
   @Post()
   async register(@Request() req: any) {
     const accountId = await this.getAccountId(req);
     return await this.playerService.register(accountId);
   }
+
   private getAccountId(req: any) {
     return req.user.userId;
   }

@@ -10,11 +10,13 @@ import { Server, Socket } from 'socket.io';
 import { BattleService } from './battle.service';
 import { MatchRequestDto } from './dto/matchRequest.dto';
 import { WebSocketJwtAuthGuard } from '../auth/guard/webSocketJwt.guard';
-import { Battle } from './battle.model';
+
 import { EBattleType } from './enum/battleType.enum';
 import { TRoundActionRequestDto } from './dto/roundActionRequest.dto';
 import { EBattleEvents } from './enum/battleEvent.enum';
 import { EBattleTimer } from './enum/battleTimer.enum';
+import { Battle } from 'pepese-core/dist/battle/class';
+import { dto } from 'pepese-core/dist/user';
 
 @WebSocketGateway({ namespace: 'battle', cors: '*:*' })
 @UseGuards(WebSocketJwtAuthGuard)
@@ -35,7 +37,9 @@ export class BattleGateway {
         const battle = await this.createPvEBattle(playerId, data.petId);
         this.joinBattleRoom(battle.uuid, client);
         this.configEvents(battle);
-        this.server.to(battle.uuid).emit('battleChange', battle);
+        this.server
+          .to(battle.uuid)
+          .emit('battleChange', this.prepareDataForClient(battle));
         battle.setTimer(5, EBattleTimer.startDelay);
         break;
       case EBattleType.pvp:
@@ -68,31 +72,49 @@ export class BattleGateway {
   }
 
   private emitBattleRoundEnd(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.roundEnd, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.roundEnd, this.prepareDataForClient(battle));
   }
 
   private emitBattleRoundStart(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.roundStart, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.roundStart, this.prepareDataForClient(battle));
   }
 
   private emitBattleEnd(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.end, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.end, this.prepareDataForClient(battle));
   }
 
   private emitBattleStart(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.start, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.start, this.prepareDataForClient(battle));
   }
 
   private emitBattleTimerTick(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.timerTick, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.timerTick, this.prepareDataForClient(battle));
   }
 
   async emitBattleChange(battle: Battle) {
-    this.server.to(battle.uuid).emit(EBattleEvents.onBattleChange, battle);
+    this.server
+      .to(battle.uuid)
+      .emit(EBattleEvents.onBattleChange, battle.toDto());
   }
 
   private joinBattleRoom(battleUuid: string, client: Socket) {
     client.join(battleUuid);
+  }
+
+  private prepareDataForClient(battle: Battle) {
+    const dto = battle.toDto();
+
+    return { ...dto };
   }
 
   private async createPvEBattle(

@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Pet, PetDocument } from './pet.model';
 import { Model } from 'mongoose';
-import { EPetTier } from './enum/petTier.enum';
-import { EElementType } from 'pepese-core';
 import { Random } from 'src/utils/random.service';
 import { EHabitatType } from 'src/common/enum/EHabitat.enum';
 import { EFlyingPet, EGroundPet, EWaterPet } from './enum/pet.enum';
+import { EElementType } from 'pepese-core/dist/common/enum';
+import { Pet } from 'pepese-core/dist/pets/class';
+import { EPetTier } from 'pepese-core/dist/pets/enum';
+import { PetDocument } from 'pepese-core/dist/pets/schema';
 
 @Injectable()
 export class PetService {
@@ -57,6 +58,7 @@ export class PetService {
     const elements = Object.values(EHabitatType);
     return elements[Random.range(0, elements.length - 1)];
   }
+
   private getPetRandomByHabbitat(habitat: EHabitatType) {
     let elements;
     switch (habitat) {
