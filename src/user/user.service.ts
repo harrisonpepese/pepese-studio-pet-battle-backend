@@ -27,10 +27,14 @@ export class UserService {
   async findById(id: string) {
     return await this.model.findById(id);
   }
+
   async findByEmail(email: string): Promise<User> {
     const data = await this.model.findOne({ email });
+    if (!data) {
+      return;
+    }
     return new User({
-      id: data._id.toString(),
+      id: data?._id?.toString(),
       name: data.name,
       email: data.email,
       pepeseCoin: data.pepeseCoin,
